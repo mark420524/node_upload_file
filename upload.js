@@ -18,14 +18,18 @@ var resultPage=function(res,data,files){
 	if(Array.isArray(files.images)){
 		files.images.forEach(function(image){
 			var kb=image.size/1024|0;
-			res.write('<li>uploaded '+image.name+':'+kb+'kb</li>');
+			res.write('<li>uploaded '+'file/'+subFileName(image.path)+':'+kb+'kb</li>');
 		});
 	}else{
 		var image=files.images;
 		var kb=image.size/1024|0;
-		res.write('<li>uploaded '+image.name+':'+kb+'kb</li>');
+		res.write('<li>uploaded '+'file/'+subFileName(image.path)+':'+kb+'kb</li>');
 	}
 	res.end('</ul>');
+}
+
+var subFileName=function(path){
+	return path.substring(path.indexOf('upload_'));
 }
 
 var server=http.createServer(function(req,res){
