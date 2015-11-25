@@ -1,14 +1,10 @@
-var http=require('http');
 var fs=require('fs');
 var formidable=require('formidable');
-var url=require('url');
-
 var firstPage=function(res){
 	res.writeHead(200,{'Content-type':'text/html'});
 	var html=fs.readFileSync(__dirname+'/public/form.html');
 	res.end(html);
 }
-
 var resultPage=function(res,data,files){
 	res.setHeader('Content-type','text/html');
 	res.write('<p>thanks '+data.name+'</p>');
@@ -32,11 +28,14 @@ var resultPage=function(res,data,files){
 var subFileName=function(path){
 	return path.substring(path.indexOf('upload_'));
 }
-
-var server=http.createServer(function(req,res){
-	if(req.method=='GET'){
-		return firstPage(res);
-	}
+function toUpload(res){
+	firstPage(res);
+}
+function start(res){
+	console.log('Reqeust handler "start" was caller');
+}
+function upload(res,req){
+	console.log('Reqeust handler "upload" was caller');
 	var form = new formidable.IncomingForm;  
     var data = {};  
     var files = {};
@@ -65,7 +64,8 @@ var server=http.createServer(function(req,res){
         resultPage(res,data,files);   
     });  
   
-    form.parse(req);  
-});
-server.listen(12345);
-console.log('server running on http://127.0.0.1:12345');
+    form.parse(req);
+}
+exports.start=start;
+exports.upload=upload;
+exports.toUpload=toUpload;
